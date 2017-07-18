@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:c="http://www.springframework.org/schema/c"
+	xsi:schemaLocation="
+ 		http://www.springframework.org/schema/beans
+ 		http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+ 		http://www.springframework.org/schema/util
+ 		http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+
+	<import resource="loggers.xml" />
+	<import resource="aspect.xml" />
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:client.properties</value>
+			</list>
+		</property>
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="systemPropertiesMode">
+			<util:constant
+				static-field="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer.SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		</property>
+	</bean>
+
+
+	<bean id="client" class="com.epam.spring.core.bean.Client">
+		<constructor-arg value="${id}" />
+		<constructor-arg value="${name}" />
+		<!-- <property name="greeting" value="${greeting}"></property> -->
+		<property name="greeting" value="#{systemProperties['user.name']}"></property>
+
+	</bean>
+
+	<bean id="event" class="com.epam.spring.core.bean.Event" scope="prototype">
+		<constructor-arg>
+			<bean class="java.util.Date" />
+		</constructor-arg>
+		<constructor-arg ref="dateFormat" />
+	</bean>
+
+	<bean id="dateFormat" class="java.text.DateFormat" factory-method="getDateTimeInstance" />
+
+	<util:map id="loggerMap">
+		<entry key="INFO" value-ref="consoleEventLogger" />
+		<entry key="ERROR" value-ref="combinedEventLogger" />
+	</util:map>
+
+	<bean id="app" class="com.epam.spring.core.App" c:client="#{client}">
+		<!-- <constructor-arg ref="client" /> -->
+		<!-- <constructor-arg ref="cacheFileEventLogger" /> -->
+		<constructor-arg
+			value="#{T(com.epam.spring.core.bean.Event).isDay()?fileEventLogger:consoleEventLogger}" />
+		<constructor-arg ref="loggerMap" />
+	</bean>
+
+	<bean id="monitor" class="com.epam.spring.core.util.Monitor" />
+	<bean id="awared" class="com.epam.spring.core.util.AwareBean"
+		init-method="init" />
+
+</beans>
