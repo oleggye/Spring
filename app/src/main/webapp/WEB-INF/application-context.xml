@@ -17,6 +17,17 @@
 	<!-- Turn @Controller into actual web controller -->
 	<mvc:annotation-driven />
 
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver"> 
+		<property name="basename" value="views" /> </bean>
+
+	<!-- <bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean> -->
+
 	<mvc:interceptors>
 		<bean class="by.epam.spring.mvc.interceptor.MyInterceptor" />
 	</mvc:interceptors>
