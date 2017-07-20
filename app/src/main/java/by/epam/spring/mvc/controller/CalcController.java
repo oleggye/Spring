@@ -1,12 +1,9 @@
 package by.epam.spring.mvc.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -14,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class CalcController {
 
 	@GetMapping
-	public ModelAndView calculate(@RequestParam(value = "first", required = true) int first,
+	public ModelAndView calculate(@RequestParam(value = "first", required = false, defaultValue = "1") int first,
 			@RequestParam("second") int second) {
 		System.out.println("CALCULATE EXECUTED!");
 
